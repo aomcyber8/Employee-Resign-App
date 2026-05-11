@@ -66,6 +66,12 @@
           <span class="stat-label">พนักงานทั้งหมด</span>
         </div>
       </div>
+      <div class="stat-card stat-active">
+        <div class="stat-info">
+          <span class="stat-number" id="stat-active">0</span>
+          <span class="stat-label">ไม่รวมยกเลิกลาออก</span>
+        </div>
+      </div>
       <div class="stat-card stat-success">
         <div class="stat-info">
           <span class="stat-number" id="stat-hr-closed">0</span>
@@ -109,8 +115,14 @@
         <input type="text" id="search-input" placeholder="ค้นหาชื่อ หรือ รหัสพนักงาน..." autocomplete="off" />
       </div>
       <div class="filter-group">
+        <div class="date-filter" style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0 0.5rem;">
+          <input type="date" id="filter-start-date" class="filter-select" style="border: none; background: transparent;" title="ตั้งแต่วันที่" />
+          <span style="color: var(--text-muted); font-size: 0.9rem;">ถึง</span>
+          <input type="date" id="filter-end-date" class="filter-select" style="border: none; background: transparent;" title="ถึงวันที่" />
+        </div>
         <select id="filter-resign-status" class="filter-select">
           <option value="">สถานะลาออก (ทั้งหมด)</option>
+          <option value="not_canceled">ไม่รวมยกเลิกลาออก</option>
           <option value="ลาออก">ลาออก</option>
           <option value="ลาออกไม่ครบ 30 วัน">ลาออกไม่ครบ 30 วัน</option>
           <option value="ยกเลิกลาออก">ยกเลิกลาออก</option>

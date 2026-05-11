@@ -290,7 +290,7 @@ body::before {
    ============================================ */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: var(--space-md);
   margin-bottom: var(--space-lg);
 }
@@ -313,6 +313,7 @@ body::before {
 }
 
 .stat-total { border-top: 3px solid var(--accent-primary); }
+.stat-active { border-top: 3px solid var(--color-info); }
 .stat-success { border-top: 3px solid var(--color-success); }
 .stat-warning { border-top: 3px solid var(--color-warning); }
 .stat-danger { border-top: 3px solid var(--color-danger); }
@@ -331,6 +332,7 @@ body::before {
 }
 
 .stat-total .stat-number { color: var(--accent-primary-hover); }
+.stat-active .stat-number { color: var(--color-info); }
 .stat-success .stat-number { color: var(--color-success); }
 .stat-warning .stat-number { color: var(--color-warning); }
 .stat-danger .stat-number { color: var(--color-danger); }
@@ -978,7 +980,7 @@ form {
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid { grid-template-columns: repeat(3, 1fr); }
   .form-row-2 { grid-template-columns: 1fr; gap: 0; }
 }
 

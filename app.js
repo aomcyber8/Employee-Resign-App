@@ -19,7 +19,9 @@ let currentFilters = {
   resignStatus: '',
   docStatus: '',
   hrStatus: '',
-  factor: ''
+  factor: '',
+  startDate: '',
+  endDate: ''
 };
 let sortConfig = {
   column: 'terminationDate',
@@ -36,6 +38,7 @@ const $$ = (sel) => document.querySelectorAll(sel);
 const dom = {
   // Stats
   statTotal: $('#stat-total'),
+  statActive: $('#stat-active'),
   statHrClosed: $('#stat-hr-closed'),
   statPending: $('#stat-pending'),
   statCanceled: $('#stat-canceled'),
@@ -56,6 +59,8 @@ const dom = {
   filterDoc: $('#filter-doc-status'),
   filterHr: $('#filter-hr-status'),
   filterFactor: $('#filter-factor'),
+  filterStartDate: $('#filter-start-date'),
+  filterEndDate: $('#filter-end-date'),
   sortHeaders: $$('.sortable'),
 
   // Modals
@@ -223,7 +228,11 @@ function getFilteredAndSortedEmployees() {
 
   // 3. Filter by Dropdowns
   if (currentFilters.resignStatus) {
-    result = result.filter(e => e.resignStatus === currentFilters.resignStatus);
+    if (currentFilters.resignStatus === 'not_canceled') {
+      result = result.filter(e => e.resignStatus !== 'ยกเลิกลาออก');
+    } else {
+      result = result.filter(e => e.resignStatus === currentFilters.resignStatus);
+    }
   }
   if (currentFilters.docStatus) {
     result = result.filter(e => e.documentStatus === currentFilters.docStatus);
@@ -235,7 +244,24 @@ function getFilteredAndSortedEmployees() {
     result = result.filter(e => e.resignFactor === currentFilters.factor);
   }
 
-  // 4. Sort
+  // 4. Filter by Date Range (Termination Date)
+  if (currentFilters.startDate) {
+    const start = new Date(currentFilters.startDate).getTime();
+    result = result.filter(e => {
+      if (!e.terminationDate) return false;
+      return new Date(e.terminationDate).getTime() >= start;
+    });
+  }
+  if (currentFilters.endDate) {
+    // Add 24 hours to include the entire end day
+    const end = new Date(currentFilters.endDate).getTime() + (24 * 60 * 60 * 1000) - 1;
+    result = result.filter(e => {
+      if (!e.terminationDate) return false;
+      return new Date(e.terminationDate).getTime() <= end;
+    });
+  }
+
+  // 5. Sort
   if (sortConfig.column) {
     result.sort((a, b) => {
       let valA = a[sortConfig.column] || '';
@@ -323,9 +349,11 @@ function renderStats(filteredList) {
   const total = sheetEmployees.length;
   const hrClosed = sheetEmployees.filter(e => e.hrOnlineStatus === 'ปิดลาออกแล้ว').length;
   const canceled = sheetEmployees.filter(e => e.resignStatus === 'ยกเลิกลาออก').length;
+  const active = total - canceled;
   const pending = total - hrClosed - canceled;
 
   animateNumber(dom.statTotal, total);
+  animateNumber(dom.statActive, active);
   animateNumber(dom.statHrClosed, hrClosed);
   animateNumber(dom.statPending, pending);
   animateNumber(dom.statCanceled, canceled);
@@ -933,6 +961,8 @@ function initEventListeners() {
   dom.filterDoc.addEventListener('change', e => applyFilter(e, 'docStatus'));
   dom.filterHr.addEventListener('change', e => applyFilter(e, 'hrStatus'));
   dom.filterFactor.addEventListener('change', e => applyFilter(e, 'factor'));
+  dom.filterStartDate.addEventListener('change', e => applyFilter(e, 'startDate'));
+  dom.filterEndDate.addEventListener('change', e => applyFilter(e, 'endDate'));
 
   // Modals closing
   const closes = [
